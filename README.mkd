@@ -1,0 +1,105 @@
+# PYZORK
+
+More complicated hello world attempt in python3.
+
+## Requirements
+
+1. [~] Implement Classes and Objects. You must have a Player class and a Room class.
+2. [ ] This game should have at least 4 total Rooms in instance which the player can navigate between.
+3. [ ] The player should have a way to win the game. Whatever condition that is, is up to you. It could be go through all 4 rooms or something more complicated.
+4. [ ] The game should take in user inputs.
+5. [ ] The game should exist in multiple files and or folders that separate the concerns of the program effectively. The Player class should not be defined in the same file as the Room class.
+
+## Stretch goals
+
+1. [~] Implement best project sturcture practices as indicated by [O'Reilly's _The Hitchhiker's Guid to Python_](https://docs.python-guide.org/writing/structure/)
+2. [x] Pusdo-animated box room display with visualized exits.
+3. [ ] Data files for game data.
+
+### Random development notes -- descent into madness
+
+* O'Reilly recommends making a `setup.py`.  Upon closer reading this appears to be for use with exportal modules using `pip`.  So like JavaScript's `npm`?
+* `core.py` seems to be an agreed upon entry point for python scripts.  Though the actual entry point looks to be `__init__.py`.  Which seems to be like a cheeky reference to python class constructors?
+  * `core.py` is like C#'s `Setup.cs`, where `__init__.py` is like C#'s `Program.cs`
+* Python seems to like `__Thing__` which I'm guessing is a way of making something `private` or `internal` in a language which doesn't (seem to?) have access modifiers.
+* I've seen at least three repos on github have a `__version__.py` file that outputs a version number with some cool ASCII art.  I would guess this is for exported module packages?  But one repo wasn't a package.  Whatever, I like cool ASCII art.  Imma do that.
+* Okay.  Setting up vscode's `launch.json` was both very annoying and embarsingly stright forwards once I figure it out.  How have I never had multiple launch configurations before and noticed you have to swap it from the command pallet?
+* After 10 minutes of googling, I can't figure out what the Pythonal name for an entry point method is called.  Imma call it `main`, like every other langauge.  Bite me, if false.
+* Okay so I *DO* probably want a module?  Looks like I should invoke with a `-m` argument and the name... WHAT SCARECROW-FUCKING-FIELD-OF-FUCKS NAME???
+  * I have figured out it's just the name of the folder containing `__init__.py`.  Sorry for shouting.
+  * Wait does this mean I _should_ have a `setup.py`?  Uh... I'm gonna ignore that.
+* **Imports**, _a story in five acts_ ![Meme](https://iq-inc.com/wp-content/uploads/2021/02/AndyRelativeImports-300x294.jpg)
+  * What does it mean unused import?  I'm totally using it.
+  * Oh it can it not find it?  Nested folders, probably?  No?
+  * Wait, how the FUCK to imports work?  Wait, yes, it's folders.
+  * Oh... like that.  With the `.` okay.  Why not.  Needed more dots.  More dots.
+  * Nevermind, this makes perfect sense.
+* What the fuck is `__pycache__`?  The `.gitignore` I stole from google says to ignore it.  Looks like "build" output?  Oh, maybe debug state?  I keep deleting it and it keeps coming back.
+* Oh no
+  > 'pyzork' is a package and cannot be directly executed
+
+    Quick, to [stackoverflow](https://stackoverflow.com/questions/4050120/execute-an-installed-python-package-as-a-script)!
+    OH.  So.  If I'm an executable (not a library) I should have a `__main__.py`?  Why didn't I see this when googling eariler?
+* So I need to define functions first then call `__main__()` at the bottom.  Like JS.
+* *BEHOLD A HELLO WORLD*  Gonna commit.
+  * Wait why do I have a warning?
+    > RuntimeWarning: 'pyzork.__main__' found in sys.modules after import of package 'pyzork', but prior to execution of 'pyzork.__main__'; this may result in unpredictable behaviour
+  * I HAVE NOT A CLUE HOW TO GET RID OF THIS WRANING.  I feel like I need to understand all of python's import logic first.
+    * **I have now supressed all warning.  I'm terrible.**
+* Full disclosure: I learned python classes from W3Schools.  Oh dear.
+  * Also I called my rooms "scenes" because I always use actor/director/scene when doing gamedev.  I stole this from RPGMaker and Ruby and I refuse to change.
+  * Wait everything is snake_case except for class names which are pascal?  Jokes on you python, I'm a C-family developer.  I love me some PascalCase.
+  * Something is sure _hacky_ about the fact `__init__` takes in `self`.  Python wasn't built to originally have classes........ was it....?
+  * Wait are methods snake_case or camelCase?  I don't think I trust W3Schools.
+  * OHHH SHEITT found Python's offical [style guide](http://www.python.org/dev/peps/pep-0008/).  It's pretty good too.  Very long though.  Imma not read it now.  The answer was snake_case.  Fuck you, W3Fools.
+* Blah blah, I know what a constructor and properties are (famous last words)  `Downs whole cup of coffee in one swig` -- TIME FOR INHERITANCE
+  * WAIT PYTHON DOES INHERITANCE... HOW?  It just... passes in the subclass to the super?  BWHAAH.  That's amazing.
+  * Oh my god.  Is that why it takes `self` on the constructor?  That's amazingly hacky.  I love it.
+  * Why does self have to be passed in everywhere?
+* `match` statement requires python `3.10` or something.  What python am I running? -- `3.8`.  Damn.  Switch statements were pretty late for python?
+  * I'm suddenly very aware that using `match` might be a needless version lock.  I'll use an `if`-`else` ladder.
+  * [Architecture notes #1]:  Have scenes self register to a director, then no ladder.
+* Should I be using two spaces or four for indents?  Google says 4.  I like 4 too.
+* Googling "python if else" is low-key a throw back to when I first learned to code.
+* Gah.  Python is one of those languages that has its own keyword for `if else`.  Why not just... use `if else`.  What the living fuck is an `elif`.  Sounds like a ripoff anime D&D race.
+* How do I `new()` up an object?  Oh just... call it like a method?  Sure, seems fine.
+* If I put ONE MORE FUCKING SEMICOLON AT THE END OF A LINE OUT OF HABBIT AGAIN.
+* Ooooo `import x as y`  Nice.
+  * Nevermind I can't use `as` I still don't understand how these imports work.  Then again it took 3 years before I knew what `export default` did for JS, so... by that logic we're lightspeed out here.
+* I'm now realizing that I probably don't need a parent class for scene due to Python's typing system.  I'll keep it for now, but it's likely gonna go in a later commit.
+* Nevermind.  Imma gonna do screan display as a text file.  Unified "find a text file by this name and display it" is pretty neat.
+* DEAR GOD.  How do I define a varaible?  _A story in three acts_:
+  ```python
+    def attempt = thing  # Nope.  attempt not defined??? IM DEFINING IT RIGHT THERE YOU FUCKWIT
+  ```
+
+  ```python
+    def attempt_two
+    attempt_two = thing  # Nope. attempt_two is unbound?  What the fuck does that even mean?
+  ```
+
+  ```python
+    attempt_three = thing  # oh for crying out loud.
+  ```
+  * Side note, even the Markdown syntax highlighting in this readme is mocking me now.  "Durr, that's not how you define a varaible"
+* Does VSCode's f12 work?  Yes.  Yes it does!  Already better than vanillaJS
+* My class doesn't have a method defined?
+  * Ope.  I have the indentation wrong.  Impressive it was this long before that happened.
+* `No such file or directory`.  Hm.  Rethinking this "display scene data from files" idea.
+  * Idea:  googling "python print working directory".  Ope.  So that's how my runtime directory looks.
+  * Nope googling how to read from a "static file".  Yup.  Should have known I needed the word "static".  `importlib.resources` seems to be the way to do this.  Awesome!  This is exactly what I wanted to do.
+    * Oh no.  [These docs](https://docs.python.org/3.8/library/importlib.html?highlight=importlib#module-importlib.resources) are long.
+    * Wait introduced in python 3.7.  But deprecated in python 3.11?  What... uh... happened here?
+    * `Package has no location` what does that mean?
+      * Ope.  I can't read.  Docs say I need a nested (but empty) `__init__.py` file.  Can do.
+    * OMG IT WORKS.
+* I have 88 browser tabs open.  I'm closing all of them now.
+* I have 14 VSCode tabs open.  I'm closing all of them now.
+* Now moving stuff to the parent class so all scenes get it.
+* I don't know how python names class files.  I'm gonna assume they use the same as the class name.  So `PascalCase.py`
+* [Game design note #1] Should the options be on the display or generated by the scene class.  Probably generated by the scene class, huh?
+
+## Authorial
+
+@Kendandra
+
