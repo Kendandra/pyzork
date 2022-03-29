@@ -1,25 +1,34 @@
+from pyzork import data
+from pyzork.scene import Scene
 from .helpers import clear_screen;
-from .scenes.TitleScene import TitleScene
-from .scenes.RoomOneScene import RoomOneScene
+import importlib.resources as resources
+import json
+
+from .deps.climage import convert
+
 
 
 def main():
 
-    current_scene = swap_scene("title")
-    current_scene.set_scene()
-    result = current_scene.run_scene()
-
-    # implement quit from title screen at some point :/
-
-    current_scene = swap_scene("room_1")
-    current_scene.set_scene()
-    result = current_scene.run_scene()
-
-
-def swap_scene(scene_name):
     clear_screen()
 
-    if scene_name == "title":
-        return TitleScene()
-    elif scene_name == "room_1":
-        return RoomOneScene()
+    config_json = resources.read_text(data, 'data.json')
+
+    room_data = load_room_data(config_json)
+
+    #current_scene = swap_scene("menu", "title")
+    #current_scene.set_scene()
+    #result = current_scene.run_scene()
+
+    current_scene = swap_scene("game", room_data[0])
+    current_scene.set_scene()
+    result = current_scene.run_scene()
+
+
+def swap_scene(scene_type, scene_data):
+    clear_screen()
+
+    return Scene(scene_data)
+
+def load_room_data(json_data):
+    return json.loads(json_data)["rooms"]

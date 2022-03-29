@@ -4,7 +4,7 @@ More complicated hello world attempt in python3.
 
 ## Requirements
 
-1. [~] Implement Classes and Objects. You must have a Player class and a Room class.
+1. [ ] Implement Classes and Objects. You must have a Player class and a Room class.
 2. [ ] This game should have at least 4 total Rooms in instance which the player can navigate between.
 3. [ ] The player should have a way to win the game. Whatever condition that is, is up to you. It could be go through all 4 rooms or something more complicated.
 4. [ ] The game should take in user inputs.
@@ -12,7 +12,7 @@ More complicated hello world attempt in python3.
 
 ## Stretch goals
 
-1. [~] Implement best project sturcture practices as indicated by [O'Reilly's _The Hitchhiker's Guid to Python_](https://docs.python-guide.org/writing/structure/)
+1. [ ] Implement best project sturcture practices as indicated by [O'Reilly's _The Hitchhiker's Guid to Python_](https://docs.python-guide.org/writing/structure/)
 2. [x] Pusdo-animated box room display with visualized exits.
 3. [ ] Data files for game data.
 
