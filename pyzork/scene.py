@@ -1,7 +1,8 @@
 import os
 import importlib.resources as resources
 from .deps.climage import convert
-from .helpers import clear_screen;
+from .helpers import clear_screen
+from pyzork import data as data_files
 
 
 # Responsible for managing and running a scene.  Right now only supports rooms.
@@ -20,16 +21,17 @@ class Scene:
         if not settings:
             raise Exception("Missing settings", self)
 
-        # TODO add support for other types of scenes, like item interactions, puzzles, menus
-        if scene_data["type"] != "room":
-            raise Exception("Scene called on unsupported data type", scene_data["type"])
+        try:
+            self.type = scene_data["type"]
+            self.name = scene_data["name"]
+            self.id = scene_data["id"]
+            self.commands = scene_data["commands"]
+        except:
+            raise Exception("Scene configuration was missing required data.  Check data.json.")
 
-        self.type = scene_data["type"]
-        self.name = scene_data["name"]
-        self.id = scene_data["id"]
-        self.description = scene_data["description"]
-        self.image = scene_data["image"]
-        self.commands = scene_data["commands"]
+        self.description = scene_data.get("description")
+        self.image_render = scene_data.get("image_render")
+        self.text_render = scene_data.get("text_render")
 
         self.display = settings["display"]
         self.command_list_data = command_data
@@ -40,7 +42,7 @@ class Scene:
         screen_visual = self.get_screen_display()
         command_list = self.get_command_prompt(self.commands, prompt)
 
-        # Render the room
+        # Render the scene
         if debug_no_display:
             print(f"Expected to render {self.type}:{self.id} {self.name}")
         else:
@@ -92,19 +94,22 @@ class Scene:
 
 
     def get_screen_display(self):
-        # if display type == text
-        # return resources.read_text(screen_data, f'{self.name}.pzk')
-        # if display type == img
-        if self.image:
-            return convert(f'pyzork/data/maps/{self.image}.png',
+        if self.image_render:
+            return convert(f'pyzork/data/maps/{self.image_render}.png',
                 is_unicode=self.display["use_unicode"],
                 palette="default",
                 width=self.display["max_width"])
+        if self.text_render:
+            return resources.read_text(data_files, self.text_render)
         else:
             return ""
 
 
     def get_command_description(self, command_type):
         command = [command for command in self.command_list_data if command["type"] == command_type]
+
+        if len(command) == 0:
+            raise Exception("Invalid command configuration for scene.  No valid commands found for command type.", command_type)
+
         return command[0]["description"]
 
