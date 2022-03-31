@@ -1,0 +1,81 @@
+{
+    "commands": [
+        {
+            "type": "game-start",
+            "kind": "menu-game-start",
+            "on": [
+                "menu"
+            ],
+            "description": "Type 'Start' to Start.",
+            "verbs": [
+                "start",
+                "enter"
+            ]
+        },
+        {
+            "type": "game-exit",
+            "kind": "menu-game-exit",
+            "on": [
+                "menu"
+            ],
+            "description": "Type 'Quit' to Exit.",
+            "verbs": [
+                "quit",
+                "exit",
+                "q"
+            ]
+        },
+        {
+            "type": "move-n",
+            "kind": "move-to-target",
+            "on": [
+                "room"
+            ],
+            "description": "Go North",
+            "verbs": [
+                "n",
+                "north",
+                "go north"
+            ]
+        },
+        {
+            "type": "move-e",
+            "kind": "move-to-target",
+            "on": [
+                "room"
+            ],
+            "description": "Go East",
+            "verbs": [
+                "e",
+                "east",
+                "go east"
+            ]
+        },
+        {
+            "type": "move-s",
+            "kind": "move-to-target",
+            "on": [
+                "room"
+            ],
+            "description": "Go South",
+            "verbs": [
+                "s",
+                "south",
+                "go south"
+            ]
+        },
+        {
+            "type": "move-w",
+            "kind": "move-to-target",
+            "on": [
+                "room"
+            ],
+            "description": "Go West",
+            "verbs": [
+                "w",
+                "west",
+                "go west"
+            ]
+        }
+    ]
+}

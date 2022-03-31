@@ -1,21 +1,20 @@
 from pyzork.menu_scene import MenuScene
 from pyzork.room_scene import RoomScene
-from pyzork.scene import Scene
 
 # Responsible for loading scenes, processing commands,
 # Owns all actors.
 class Director:
-    def __init__(self, settings, menu_data, room_data, command_data):
+    def __init__(self, settings, game_data):
         self.settings = settings
-        self.menu_data = menu_data
-        self.room_data = room_data
-        self.command_data = command_data
+        self.menu_data = game_data["menus"]
+        self.room_data = game_data["rooms"]
+        self.command_data = game_data["commands"]
 
         self.current_scene = None
         self.actor_player = None # TODO Make a player to track inventory state
 
         # Start the game on the title-menu
-        self.next_scene_request = ("menu", menu_data[0]["id"])
+        self.next_scene_request = ("menu", self.menu_data[0]["id"])
 
 
     def direct(self):

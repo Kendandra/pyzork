@@ -1,0 +1,28 @@
+{
+    "items": [
+        {
+            "id": 1,
+            "type": "item",
+            "kind": "key",
+            "name": "Emerald Pearl"
+        },
+        {
+            "id": 2,
+            "type": "item",
+            "kind": "key",
+            "name": "Lapis Pyramid"
+        },
+        {
+            "id": 3,
+            "type": "item",
+            "kind": "key",
+            "name": "Tourmaline Prisim"
+        },
+        {
+            "id": 4,
+            "type": "item",
+            "kind": "key",
+            "name": "Ruby Pentahedron"
+        }
+    ]
+}

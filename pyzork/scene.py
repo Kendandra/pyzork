@@ -1,6 +1,6 @@
 import os
 import importlib.resources as resources
-from .deps.climage import convert
+from climage import convert
 from .helpers import clear_screen
 from pyzork import data as data_files
 

@@ -10,36 +10,44 @@ def main():
 
     clear_screen()
     try:
-        config_json = resources.read_text(data, 'data.json')
+        menu_data = load_config_file_to_dict("menus.json", "menus")
+        room_data = load_config_file_to_dict("rooms.json", "rooms")
+        command_data = load_config_file_to_dict("commands.json", "commands")
+        item_data = load_config_file_to_dict("items.json", "items")
+        conversation_data = load_config_file_to_dict("conversations.json", "conversations")
 
-        menu_data = load_menu_data(config_json)
-        room_data = load_room_data(config_json)
-        command_data = load_command_data(config_json)
+        game_data = {
+            "menus": menu_data,
+            "rooms": room_data,
+            "commands": command_data,
+            "items": item_data,
+            "conversations": conversation_data
+        }
 
-        settings = dict(
-            debug=False, # When True, will omit game render and just do debug lines
-            display=dict(
-                use_unicode=check_system_console_support(),
-                max_width=50
-            ))
+        settings = {
+            "debug": False, # When True, will omit game render and just do debug lines
+            "display": {
+                "use_unicode": check_system_console_support(),
+                "max_width": 50
+            }
+        }
     except:
-        print("ERROR: Could not read config data")
+        print("LOAD ERROR")
         return
 
-    director = Director(settings, menu_data, room_data, command_data)
+    director = Director(settings, game_data)
 
     director.direct()
 
-# TODO don't really need these methods anymore, expected to do more work here, but likely never will
-# Consider removing?
-def load_menu_data(json_data):
-    return json.loads(json_data)["menus"]
 
-def load_room_data(json_data):
-    return json.loads(json_data)["rooms"]
+def load_config_file_to_dict(file_name, json_key):
+    try:
+        json_data = resources.read_text(data, file_name)
+        return json.loads(json_data)[json_key]
+    except:
+        print(f"Could not load configuration for {json_key}")
+        raise Exception("Could not load configuration data.", file_name, json_key)
 
-def load_command_data(json_data):
-    return json.loads(json_data)["commands"]
 
 def check_system_console_support():
     # The windows console is garbage, so we can't display "high rez" pictures if we're there
