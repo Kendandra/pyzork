@@ -44,6 +44,9 @@ class Scene:
 
         # Render the scene
         if debug_no_display:
+            print(f"Detected unicode settings {self.display['use_unicode']}")
+            print(f"Detected screen settings {self.display['max_width']}")
+
             print(f"Expected to render {self.type}:{self.id} {self.name}")
         else:
             clear_screen()
