@@ -1,0 +1,121 @@
+{
+    "commands": [
+        {
+            "what": "game-start",
+            "kind": "menu-game-start",
+            "order": 1,
+            "on": [
+                "menu"
+            ],
+            "description": "Type 'Start' to Start.",
+            "verbs": [
+                "start",
+                "enter"
+            ]
+        },
+        {
+            "what": "game-exit",
+            "kind": "menu-game-exit",
+            "order": 99999,
+            "on": [
+                "menu"
+            ],
+            "description": "Type 'Quit' to Exit.",
+            "verbs": [
+                "quit",
+                "exit",
+                "q"
+            ]
+        },
+        {
+            "what": "game-settings-high",
+            "kind": "menu-game-settings-high",
+            "order": 800,
+            "on": [
+                "menu"
+            ],
+            "when": [
+                { "condition": "graphics", "is": "low" }
+            ],
+            "description": "Graphics: Low -- Type 'Graphic High' to change.",
+            "verbs": [
+                "graphics high",
+                "g high",
+                "gh"
+            ]
+        },
+        {
+            "what": "game-settings-low",
+            "kind": "menu-game-settings-low",
+            "order": 800,
+            "on": [
+                "menu"
+            ],
+            "when": [
+                { "condition": "graphics", "is": "high" }
+            ],
+            "description": "Graphics: High -- Type 'Graphics Low' to change.",
+            "verbs": [
+                "graphics low",
+                "g low",
+                "gl"
+            ]
+        },
+        {
+            "what": "move-n",
+            "kind": "move-to-target",
+            "order": 10,
+            "on": [
+                "room"
+            ],
+            "description": "Go North",
+            "verbs": [
+                "n",
+                "north",
+                "go north"
+            ]
+        },
+        {
+            "what": "move-e",
+            "kind": "move-to-target",
+            "order": 11,
+            "on": [
+                "room"
+            ],
+            "description": "Go East",
+            "verbs": [
+                "e",
+                "east",
+                "go east"
+            ]
+        },
+        {
+            "what": "move-s",
+            "kind": "move-to-target",
+            "order": 12,
+            "on": [
+                "room"
+            ],
+            "description": "Go South",
+            "verbs": [
+                "s",
+                "south",
+                "go south"
+            ]
+        },
+        {
+            "what": "move-w",
+            "kind": "move-to-target",
+            "order": 13,
+            "on": [
+                "room"
+            ],
+            "description": "Go West",
+            "verbs": [
+                "w",
+                "west",
+                "go west"
+            ]
+        }
+    ]
+}

@@ -1,24 +1,20 @@
-import os
-
-from pyzork.scene import Scene
-from .helpers import clear_screen;
-
-
+from pyzork.menu_scene import MenuScene
+from pyzork.room_scene import RoomScene
 
 # Responsible for loading scenes, processing commands,
 # Owns all actors.
 class Director:
-    def __init__(self, settings, room_data, command_data):
+    def __init__(self, settings, game_data):
         self.settings = settings
-        self.room_data = room_data
-        self.command_data = command_data
+        self.menu_data = game_data["menus"]
+        self.room_data = game_data["rooms"]
+        self.command_data = game_data["commands"]
 
         self.current_scene = None
         self.actor_player = None # TODO Make a player to track inventory state
 
-        # Start the game at room one.
-        # TODO add a title screen here first
-        self.next_scene_request = ("room", room_data[0]["id"])
+        # Start the game on the title-menu
+        self.next_scene_request = ("menu", self.menu_data[0]["id"])
 
 
     def direct(self):
@@ -29,36 +25,55 @@ class Director:
                 or next_scene.id != self.current_scene.id
                 or next_scene.type != self.current_scene.type):
                 self.current_scene = next_scene
-                self.current_scene.set_scene(debug_no_display=self.settings["debug"])
+                self.current_scene.set_scene()
 
                 if self.settings["debug"]:
                     print(f"Next scene found: {self.current_scene.name}")
 
-            player_command = self.current_scene.run_scene()
+            player_command_tuple = self.current_scene.run_scene()
 
             if self.settings["debug"]:
-                print(f"Got command {player_command}")
+                print(f"Got command {player_command_tuple}")
 
-            self.execute_player_command(player_command)
+            should_exit = self.execute_player_command(player_command_tuple)
 
-        # TODO add a way for the play to quit the game.  No, ctrl+c doesn't count.
-        return "Goodbye!"
+            if should_exit:
+                break
 
-    def execute_player_command(self, player_command):
+        # TODO replace with a "goodbye" scene?
+        return "Thanks for playing!"
+
+    # TODO Consider commands having their own handler?
+    def execute_player_command(self, player_command_tuple):
         # First find the command prototype for this player_command
-        command_prototype = next(iter([command for command in self.command_data if player_command["type"] == command["type"]]), None)
+        (prototype_command, scene_command) = player_command_tuple
 
-        if not command_prototype:
-            raise Exception("Could not find command prototype for player_command", player_command)
-
-        command_kind = command_prototype["kind"]
+        command_kind = prototype_command["kind"]
 
         if command_kind == "move-to-target":
             # get the target to set the scene
-            room_target = player_command["target"]
+            room_target = scene_command["target"]
             self.next_scene_request = ("room", room_target)
+        elif command_kind == "menu-game-exit":
+            # Special command that exits the while loop.
+            return True
+        elif command_kind == "menu-game-start":
+            # Special command that always goes to room-1
+            self.next_scene_request = ("room", 1)
+        elif command_kind == "menu-game-settings-low":
+            # Change graphics settings to low
+            self.settings["graphics"] = "low"
+            self.settings["display"]["use_truecolor"] = False
+            self.settings["display"]["use_8color"] = True
+        elif command_kind == "menu-game-settings-high":
+            # Change graphics settings to low
+            self.settings["graphics"] = "high"
+            self.settings["display"]["use_truecolor"] = True
+            self.settings["display"]["use_8color"] = False
         else:
             raise Exception("Unknown command kind", command_kind)
+
+        return False
 
 
     def get_next_scene(self):
@@ -76,10 +91,22 @@ class Director:
             if not next_scene_data:
                 raise Exception("No scene data found for id", next_scene_id)
 
-            scene = Scene(
+            scene = RoomScene(
                 settings=self.settings,
                 scene_data=next_scene_data,
                 command_data=self.command_data)
+
+        elif next_scene_type == "menu":
+            next_scene_data = next(iter([menu for menu in self.menu_data if menu["id"] == next_scene_id]), None)
+
+            if not next_scene_data:
+                raise Exception("No scene data found for id", next_scene_id)
+
+            scene = MenuScene(
+                settings=self.settings,
+                scene_data=next_scene_data,
+                command_data=self.command_data)
+
         else:
             raise Exception("Unknown scene type", next_scene_type)
 

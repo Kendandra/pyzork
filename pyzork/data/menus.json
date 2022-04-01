@@ -1,0 +1,24 @@
+{
+    "menus": [
+        {
+            "id": 1,
+            "what": "menu",
+            "name": "Title Screen",
+            "text_render": "title.pzk",
+            "commands": [
+                {
+                    "what": "game-start"
+                },
+                {
+                    "what": "game-exit"
+                },
+                {
+                    "what": "game-settings-high"
+                },
+                {
+                    "what": "game-settings-low"
+                }
+            ]
+        }
+    ]
+}
