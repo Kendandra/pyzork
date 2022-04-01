@@ -25,7 +25,7 @@ class Director:
                 or next_scene.id != self.current_scene.id
                 or next_scene.type != self.current_scene.type):
                 self.current_scene = next_scene
-                self.current_scene.set_scene(debug_no_display=self.settings["debug"])
+                self.current_scene.set_scene()
 
                 if self.settings["debug"]:
                     print(f"Next scene found: {self.current_scene.name}")
@@ -60,6 +60,16 @@ class Director:
         elif command_kind == "menu-game-start":
             # Special command that always goes to room-1
             self.next_scene_request = ("room", 1)
+        elif command_kind == "menu-game-settings-low":
+            # Change graphics settings to low
+            self.settings["graphics"] = "low"
+            self.settings["display"]["use_truecolor"] = False
+            self.settings["display"]["use_8color"] = True
+        elif command_kind == "menu-game-settings-high":
+            # Change graphics settings to low
+            self.settings["graphics"] = "high"
+            self.settings["display"]["use_truecolor"] = True
+            self.settings["display"]["use_8color"] = False
         else:
             raise Exception("Unknown command kind", command_kind)
 

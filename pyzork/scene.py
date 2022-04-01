@@ -35,13 +35,14 @@ class Scene:
 
         self.display = settings["display"]
         self.graphics = settings["graphics"]
+        self.is_debug = settings["debug"]
         self.command_prototypes_data = command_data
 
         # A command list calculated every set_scene, taking into account game/player state.
         self.active_command_tuples = None
 
 
-    def set_scene(self, prompt="What will you do?", debug_no_display=False):
+    def set_scene(self, prompt="What will you do?"):
         screen_description = self.description
         screen_visual = self.get_screen_display()
 
@@ -51,7 +52,7 @@ class Scene:
         command_list = self.get_command_prompt(self.active_command_tuples, prompt)
 
         # Render the scene
-        if debug_no_display:
+        if self.is_debug:
             print(f"Expected to render {self.what}:{self.id} {self.name}")
         else:
             clear_screen()
@@ -110,6 +111,7 @@ class Scene:
                 is_unicode=self.display["use_unicode"],
                 is_truecolor=self.display["use_truecolor"],
                 is_256color=self.display["use_256color"],
+                is_8color=self.display["use_8color"],
                 palette="default",
                 width=self.display["max_width"]
                 )

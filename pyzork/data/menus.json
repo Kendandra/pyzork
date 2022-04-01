@@ -11,6 +11,12 @@
                 },
                 {
                     "what": "game-exit"
+                },
+                {
+                    "what": "game-settings-high"
+                },
+                {
+                    "what": "game-settings-low"
                 }
             ]
         }

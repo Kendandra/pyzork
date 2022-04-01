@@ -35,30 +35,13 @@
                 "menu"
             ],
             "when": [
-                { "condition": "graphics", "is": "high" }
+                { "condition": "graphics", "is": "low" }
             ],
-            "description": "Graphics: High -- Type 'Graphics High/Mid/Low' change.",
+            "description": "Graphics: Low -- Type 'Graphic High' to change.",
             "verbs": [
                 "graphics high",
                 "g high",
                 "gh"
-            ]
-        },
-        {
-            "what": "game-settings-mid",
-            "kind": "menu-game-settings-mid",
-            "order": 800,
-            "on": [
-                "menu"
-            ],
-            "when": [
-                { "condition": "graphics", "is": "mid" }
-            ],
-            "description": "Graphics: Mid -- Type 'Graphics High/Mid/Low' change.",
-            "verbs": [
-                "graphics mid",
-                "g mid",
-                "gm"
             ]
         },
         {
@@ -69,9 +52,9 @@
                 "menu"
             ],
             "when": [
-                { "condition": "graphics", "is": "low" }
+                { "condition": "graphics", "is": "high" }
             ],
-            "description": "Graphics: Low -- Type 'Graphics High/Mid/Low' change.",
+            "description": "Graphics: High -- Type 'Graphics Low' to change.",
             "verbs": [
                 "graphics low",
                 "g low",

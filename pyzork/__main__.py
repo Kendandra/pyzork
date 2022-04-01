@@ -28,12 +28,13 @@ def main():
         supports_truecolor = check_supports_color()
 
         settings = {
-            "debug": True, # When True, will omit game render and just do debug lines
+            "debug": False, # When True, will omit game render and just do debug lines
             "graphics": "high" if supports_truecolor else "low",
             "display": {
                 "use_unicode": check_system_console_support(),
                 "use_truecolor": supports_truecolor,
-                "use_256color": not supports_truecolor,
+                "use_256color": False,
+                "use_8color": not supports_truecolor,
                 "max_width": 50
             }
         }
