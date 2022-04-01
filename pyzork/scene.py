@@ -82,7 +82,7 @@ class Scene:
         possible_command_tuple_matches = [
             command_tuple
             for command_tuple
-            in self.active_command_tuples.items()
+            in self.active_command_tuples
             if cleaned_input in command_tuple[0]["verbs"]
         ]
 
@@ -142,6 +142,8 @@ class Scene:
 
 
         # Now add any commands for scene kind, if we didn't have a scene specific version.
+        # TODO Need to figure out this second part better. Code is valid, but probably shouldn't use "on", more like "always_on"?
+        """
         valid_commands = valid_commands + [(command_prototypes_dict[command_prototype_what], command_prototypes_dict[command_prototype_what])
             for command_prototype_what
             in command_prototypes_dict
@@ -149,6 +151,7 @@ class Scene:
                 and self.is_command_active(command_prototypes_dict[command_prototype_what], command_prototypes_dict[command_prototype_what])    # Meets activation requirements
                 and command_prototype_what not in [command[0]["what"] for command in valid_commands]                                            # Not already in the command list
         ]
+        """
 
         # Then sort by the "order" field on the prototype
         valid_commands.sort(key=lambda tuple: tuple[0]["order"])
