@@ -1,6 +1,6 @@
 import os
 import importlib.resources as resources
-from climage import convert
+import climage
 from .helpers import clear_screen
 from pyzork import data as data_files
 
@@ -22,10 +22,10 @@ class Scene:
             raise Exception("Missing settings", self)
 
         try:
-            self.type = scene_data["type"]
+            self.what = scene_data["what"]
             self.name = scene_data["name"]
             self.id = scene_data["id"]
-            self.commands = scene_data["commands"]
+            self.scene_commands = scene_data["commands"]
         except:
             raise Exception("Scene configuration was missing required data.  Check data.json.")
 
@@ -34,85 +34,154 @@ class Scene:
         self.text_render = scene_data.get("text_render")
 
         self.display = settings["display"]
-        self.command_list_data = command_data
+        self.graphics = settings["graphics"]
+        self.command_prototypes_data = command_data
+
+        # A command list calculated every set_scene, taking into account game/player state.
+        self.active_command_tuples = None
 
 
     def set_scene(self, prompt="What will you do?", debug_no_display=False):
         screen_description = self.description
         screen_visual = self.get_screen_display()
-        command_list = self.get_command_prompt(self.commands, prompt)
+
+        # Get commands currently valid for scene (always) and current game/player state (changes)
+        self.active_command_tuples = self.get_active_command_tuples()
+
+        command_list = self.get_command_prompt(self.active_command_tuples, prompt)
 
         # Render the scene
         if debug_no_display:
-            print(f"Detected unicode settings {self.display['use_unicode']}")
-            print(f"Detected screen settings {self.display['max_width']}")
-
-            print(f"Expected to render {self.type}:{self.id} {self.name}")
+            print(f"Expected to render {self.what}:{self.id} {self.name}")
         else:
             clear_screen()
             print(f"{screen_description}\n\n{screen_visual}\n{command_list}")
 
     def run_scene(self):
-        player_command = None
-        while not player_command:
-            command_check = self.check_player_command(input())
+        if not self.active_command_tuples:
+            raise Exception("No valid active commands found for scene.  Scene not set or misconfigured.", self.commands)
 
-            if not command_check:
+        player_command_tuple = None
+        while not player_command_tuple:
+            command_check_tuple = self.check_player_command_tuple(input())
+
+            if not command_check_tuple:
                 clear_screen()
                 # Inform the player that we didn't understand.
                 self.set_scene(prompt="Try as you might, you cannot.")
             else:
-                player_command = command_check
+                player_command_tuple = command_check_tuple
 
-        return command_check
+        return player_command_tuple
 
-    def check_player_command(self, input_raw):
-        # Remove whitespace and make lowercase, all our verbs are hopefully listed in the config
-        # as lowercase
+    def check_player_command_tuple(self, input_raw):
+        # Remove whitespace and make lowercase, all our verbs are hopefully listed in the config as lowercase
         cleaned_input = input_raw.strip().lower()
 
-        # Search all command prototypes for their list of verbs (alises) find some that match
-        possible_prototype_commands = [command for command in self.command_list_data if cleaned_input in command["verbs"]]
+        # Search active command prototypes for their list of verbs (alises) find some that match
+        possible_command_tuple_matches = [
+            command_tuple
+            for command_tuple
+            in self.active_command_tuples.items()
+            if cleaned_input in command_tuple[0]["verbs"]
+        ]
 
-        # Out of any that matched, find what in the scene the player was probably trying to say
-        # Take the first match we find  TODO: maybe later we'll add a specificity number and order by that?
-        scene_command = next(
-            iter([command for command in self.commands
-                    if command["type"] in [prototype["type"] for prototype in possible_prototype_commands]]
-            ), None)
-
-        if not scene_command:
+        if len(possible_command_tuple_matches) == 0:
             return None
         else:
-            return scene_command
+            # Out of any that matched, find what in the scene the player was probably trying to say
+            # Take the first match we find.  TODO: maybe later we'll add a specificity number and order by that?
+            return possible_command_tuple_matches[0]
 
 
-    def get_command_prompt(self, commands, prompt):
+    # TODO When ghost-sense is added, should this move out of the scene display?
+    def get_command_prompt(self, command_tuples, prompt):
         spacer = "■"
         ruler = spacer*(self.display["max_width"])
         centered_prompt = prompt.center(self.display["max_width"], " ")
-        command_descriptions = '\n'.join([self.get_command_description(command["type"]) for command in commands])
+        command_descriptions = '\n'.join([prototype_command["description"] for (prototype_command, _) in command_tuples])
 
         return f"{ruler}\n{centered_prompt}\n{ruler}\n{command_descriptions}\n{ruler}"
 
 
     def get_screen_display(self):
         if self.image_render:
-            return convert(f'pyzork/data/maps/{self.image_render}.png',
+            return climage.convert(f'pyzork/data/maps/{self.image_render}.png',
                 is_unicode=self.display["use_unicode"],
+                is_truecolor=self.display["use_truecolor"],
+                is_256color=self.display["use_256color"],
                 palette="default",
-                width=self.display["max_width"])
+                width=self.display["max_width"]
+                )
         if self.text_render:
             return resources.read_text(data_files, self.text_render)
         else:
             return ""
 
-
-    def get_command_description(self, command_type):
-        command = [command for command in self.command_list_data if command["type"] == command_type]
+    def get_command_prototype(self, command_what):
+        command = [command for command in self.command_prototypes_data if command["what"] == command_what][0]
 
         if len(command) == 0:
-            raise Exception("Invalid command configuration for scene.  No valid commands found for command type.", command_type)
+            raise Exception("Invalid command configuration for scene.  No valid commands found for command type.", command_what)
 
-        return command[0]["description"]
+        return command[0]
+
+    def get_active_command_tuples(self):
+
+        # Make these lists a bit easier to work with.
+        command_prototypes_dict = {command["what"]:command for command in self.command_prototypes_data}
+        scene_commands_dict = {command["what"]:command for command in self.scene_commands}
+
+        valid_commands = []
+
+        # Add THIS scene specific commands
+        valid_commands = valid_commands + [(command_prototypes_dict[scene_command_what], scene_commands_dict[scene_command_what])
+            for scene_command_what
+            in scene_commands_dict
+            if self.is_command_active(command_prototypes_dict[scene_command_what], scene_commands_dict[scene_command_what])]
+
+
+        # Now add any commands for scene kind, if we didn't have a scene specific version.
+        valid_commands = valid_commands + [(command_prototypes_dict[command_prototype_what], command_prototypes_dict[command_prototype_what])
+            for command_prototype_what
+            in command_prototypes_dict
+            if self.what in command_prototypes_dict[command_prototype_what]["on"]                                                               # Valid for this scene type
+                and self.is_command_active(command_prototypes_dict[command_prototype_what], command_prototypes_dict[command_prototype_what])    # Meets activation requirements
+                and command_prototype_what not in [command[0]["what"] for command in valid_commands]                                            # Not already in the command list
+        ]
+
+        # Then sort by the "order" field on the prototype
+        valid_commands.sort(key=lambda tuple: tuple[0]["order"])
+
+        return valid_commands
+
+    def is_command_active(self, prototype_command, scene_command):
+
+        if not "when" in scene_command and not "when" in prototype_command:
+            return True
+
+        # scene activation conditions always first, then global activation conditions
+        when_conditions = scene_command["when"] if "when" in scene_command else None
+        if when_conditions:
+            return self.eval_command_condition(when_conditions)
+
+        when_conditions = prototype_command["when"] if "when" in prototype_command else None
+
+        if when_conditions and self.eval_command_condition(when_conditions):
+            return True
+
+        return False
+
+    def eval_command_condition(self, when_conditions):
+        # For now assume the conditions are "when any".  Later added fields for "when_all" or "when_any" specifically?
+        for when in when_conditions:
+            if when["condition"] == "graphics":
+                if self.graphics == when["is"]:
+                    return True
+            else:
+                raise Exception("Unknown command-when condition.", when_conditions)
+
+        return False
+
+
 

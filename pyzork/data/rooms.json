@@ -2,476 +2,476 @@
     "rooms": [
         {
             "id": 1,
-            "type": "room",
+            "what": "room",
             "image_render": "k1",
             "name": "Entry Way",
             "description": "The West here has closed up behind you.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 17
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 3
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 5
                 }
             ]
         },
         {
             "id": 2,
-            "type": "room",
+            "what": "room",
             "image_render": "k2",
             "name": "Eastern Crossway",
             "description": "The East here is a dead end.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 14
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 6
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 8
                 }
             ]
         },
         {
             "id": 3,
-            "type": "room",
+            "what": "room",
             "image_render": "k3",
             "name": "Northern Crossway",
             "description": "The North to here is a dead end.  There's a statue here of a Sphinx.",
             "commands": [
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 8
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 7
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 1
                 }
             ]
         },
         {
             "id": 4,
-            "type": "room",
+            "what": "room",
             "image_render": "k4",
             "name": "Erie Pool",
             "description": "There's a small pool in the center of this room, a skeletal hand here holds a small green circular gem.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 19
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 5
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 8
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 14
                 }
             ]
         },
         {
             "id": 5,
-            "type": "room",
+            "what": "room",
             "image_render": "k5",
             "name": "Lonely Tree",
             "description": "There's a large tree here that casts a bright light.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 1
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 14
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 9
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 4
                 }
             ]
         },
         {
             "id": 6,
-            "type": "room",
+            "what": "room",
             "image_render": "k6",
             "name": "Stained Clearing",
             "description": "There's a small red stained rock in the middle of this room.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 2
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 7
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 11
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 9
                 }
             ]
         },
         {
             "id": 7,
-            "type": "room",
+            "what": "room",
             "image_render": "k7",
             "name": "Golem's Grave",
             "description": "The middle of this room has a broken Dimusvoran golem..",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 3
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 10
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 12
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 6
                 }
             ]
         },
         {
             "id": 8,
-            "type": "room",
+            "what": "room",
             "image_render": "k8",
             "name": "The Forest Crossroads",
             "description": "This room is seemingly benign.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 4
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 2
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 12
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 3
                 }
             ]
         },
         {
             "id": 9,
-            "type": "room",
+            "what": "room",
             "image_render": "k9",
             "name": "Stained Clearing (2)",
             "description": "There's a small red stained rock in the middle of this room.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 5
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 6
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 13
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 11
                 }
             ]
         },
         {
             "id": 10,
-            "type": "room",
+            "what": "room",
             "image_render": "k10",
             "name": "The Rat Nest",
             "description": "A rat nest here guards a small blue triangle gem.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 7
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 11
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 16
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 16
                 }
             ]
         },
         {
             "id": 11,
-            "type": "room",
+            "what": "room",
             "image_render": "k11",
             "name": "The Bat King",
             "description": "A large bat sits here.  It always faces in the direction of danger.  It will freely give a square yellow gem.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 6
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 15
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 14
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 10
                 }
             ]
         },
         {
             "id": 12,
-            "type": "room",
+            "what": "room",
             "image_render": "k12",
             "name": "Stained Clearing (3)",
             "description": "There's a small red stained rock in the middle of this room.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 8
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 15
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 15
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 7
                 }
             ]
         },
         {
             "id": 13,
-            "type": "room",
+            "what": "room",
             "image_render": "k13",
             "name": "The Hallway",
             "description": "This clearing only has two paths, to the North and South.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 9
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 17
                 }
             ]
         },
         {
             "id": 14,
-            "type": "room",
+            "what": "room",
             "image_render": "k14",
             "name": "The Statue of Ahvhar",
             "description": "There's a statue in the center of the room here that depicts the Old God of the Sky.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 11
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 4
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 2
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 5
                 }
             ]
         },
         {
             "id": 15,
-            "type": "room",
+            "what": "room",
             "image_render": "k15",
             "name": "Stained Clearing (4)",
             "description": "There's a small red stained rock in the middle of this room.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 12
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 16
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 18
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 12
                 }
             ]
         },
         {
             "id": 16,
-            "type": "room",
+            "what": "room",
             "image_render": "k16",
             "name": "The Sunless Sundial",
             "description": "There's a sundial in the middle of this room.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 10
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 10
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 20
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 15
                 }
             ]
         },
         {
             "id": 17,
-            "type": "room",
+            "what": "room",
             "image_render": "k17",
             "name": "The Snake",
             "description": "A statue of a snake holds a red rectangular gem.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 13
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 18
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 1
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 20
                 }
             ]
         },
         {
             "id": 18,
-            "type": "room",
+            "what": "room",
             "image_render": "k18",
             "name": "Stained Clearing (5)",
             "description": "There's a small red stained rock in the middle of this room.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 15
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 19
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 19
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 17
                 }
             ]
         },
         {
             "id": 19,
-            "type": "room",
+            "what": "room",
             "image_render": "k19",
             "name": "The Ringed River",
             "description": "There's circular river here.  It flows couter-clockwise",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 18
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 20
                 },
                 {
-                    "type": "move-s",
+                    "what": "move-s",
                     "target": 4
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 18
                 }
             ]
         },
         {
             "id": 20,
-            "type": "room",
+            "what": "room",
             "image_render": "k20",
             "name": "The Exit of Envy",
             "description": "There's a large door to the South here that leaves the maze.",
             "commands": [
                 {
-                    "type": "move-n",
+                    "what": "move-n",
                     "target": 16
                 },
                 {
-                    "type": "move-e",
+                    "what": "move-e",
                     "target": 17
                 },
                 {
-                    "type": "move-w",
+                    "what": "move-w",
                     "target": 19
                 }
             ]

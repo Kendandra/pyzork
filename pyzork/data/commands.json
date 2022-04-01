@@ -1,8 +1,9 @@
 {
     "commands": [
         {
-            "type": "game-start",
+            "what": "game-start",
             "kind": "menu-game-start",
+            "order": 1,
             "on": [
                 "menu"
             ],
@@ -13,8 +14,9 @@
             ]
         },
         {
-            "type": "game-exit",
+            "what": "game-exit",
             "kind": "menu-game-exit",
+            "order": 99999,
             "on": [
                 "menu"
             ],
@@ -26,8 +28,60 @@
             ]
         },
         {
-            "type": "move-n",
+            "what": "game-settings-high",
+            "kind": "menu-game-settings-high",
+            "order": 800,
+            "on": [
+                "menu"
+            ],
+            "when": [
+                { "condition": "graphics", "is": "high" }
+            ],
+            "description": "Graphics: High -- Type 'Graphics High/Mid/Low' change.",
+            "verbs": [
+                "graphics high",
+                "g high",
+                "gh"
+            ]
+        },
+        {
+            "what": "game-settings-mid",
+            "kind": "menu-game-settings-mid",
+            "order": 800,
+            "on": [
+                "menu"
+            ],
+            "when": [
+                { "condition": "graphics", "is": "mid" }
+            ],
+            "description": "Graphics: Mid -- Type 'Graphics High/Mid/Low' change.",
+            "verbs": [
+                "graphics mid",
+                "g mid",
+                "gm"
+            ]
+        },
+        {
+            "what": "game-settings-low",
+            "kind": "menu-game-settings-low",
+            "order": 800,
+            "on": [
+                "menu"
+            ],
+            "when": [
+                { "condition": "graphics", "is": "low" }
+            ],
+            "description": "Graphics: Low -- Type 'Graphics High/Mid/Low' change.",
+            "verbs": [
+                "graphics low",
+                "g low",
+                "gl"
+            ]
+        },
+        {
+            "what": "move-n",
             "kind": "move-to-target",
+            "order": 10,
             "on": [
                 "room"
             ],
@@ -39,8 +93,9 @@
             ]
         },
         {
-            "type": "move-e",
+            "what": "move-e",
             "kind": "move-to-target",
+            "order": 11,
             "on": [
                 "room"
             ],
@@ -52,8 +107,9 @@
             ]
         },
         {
-            "type": "move-s",
+            "what": "move-s",
             "kind": "move-to-target",
+            "order": 12,
             "on": [
                 "room"
             ],
@@ -65,8 +121,9 @@
             ]
         },
         {
-            "type": "move-w",
+            "what": "move-w",
             "kind": "move-to-target",
+            "order": 13,
             "on": [
                 "room"
             ],

@@ -2,15 +2,15 @@
     "menus": [
         {
             "id": 1,
-            "type": "menu",
+            "what": "menu",
             "name": "Title Screen",
             "text_render": "title.pzk",
             "commands": [
                 {
-                    "type": "game-start"
+                    "what": "game-start"
                 },
                 {
-                    "type": "game-exit"
+                    "what": "game-exit"
                 }
             ]
         }

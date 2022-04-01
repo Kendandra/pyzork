@@ -30,12 +30,12 @@ class Director:
                 if self.settings["debug"]:
                     print(f"Next scene found: {self.current_scene.name}")
 
-            player_command = self.current_scene.run_scene()
+            player_command_tuple = self.current_scene.run_scene()
 
             if self.settings["debug"]:
-                print(f"Got command {player_command}")
+                print(f"Got command {player_command_tuple}")
 
-            should_exit = self.execute_player_command(player_command)
+            should_exit = self.execute_player_command(player_command_tuple)
 
             if should_exit:
                 break
@@ -43,18 +43,16 @@ class Director:
         # TODO replace with a "goodbye" scene?
         return "Thanks for playing!"
 
-    def execute_player_command(self, player_command):
+    # TODO Consider commands having their own handler?
+    def execute_player_command(self, player_command_tuple):
         # First find the command prototype for this player_command
-        command_prototype = next(iter([command for command in self.command_data if player_command["type"] == command["type"]]), None)
+        (prototype_command, scene_command) = player_command_tuple
 
-        if not command_prototype:
-            raise Exception("Could not find command prototype for player_command", player_command)
-
-        command_kind = command_prototype["kind"]
+        command_kind = prototype_command["kind"]
 
         if command_kind == "move-to-target":
             # get the target to set the scene
-            room_target = player_command["target"]
+            room_target = scene_command["target"]
             self.next_scene_request = ("room", room_target)
         elif command_kind == "menu-game-exit":
             # Special command that exits the while loop.

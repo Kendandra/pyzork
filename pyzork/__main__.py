@@ -1,3 +1,4 @@
+import os
 from pyzork import data
 from pyzork.director import Director
 from .helpers import clear_screen;
@@ -24,10 +25,15 @@ def main():
             "conversations": conversation_data
         }
 
+        supports_truecolor = check_supports_color()
+
         settings = {
-            "debug": False, # When True, will omit game render and just do debug lines
+            "debug": True, # When True, will omit game render and just do debug lines
+            "graphics": "high" if supports_truecolor else "low",
             "display": {
                 "use_unicode": check_system_console_support(),
+                "use_truecolor": supports_truecolor,
+                "use_256color": not supports_truecolor,
                 "max_width": 50
             }
         }
@@ -57,3 +63,13 @@ def check_system_console_support():
         return True
     except UnicodeEncodeError:
         return False
+
+def check_supports_color():
+    # Returns True if the running system's terminal supports color, and False
+    # otherwise.
+    plat = sys.platform
+    supported_platform = plat != 'Pocket PC' and (plat != 'win32' or
+                                                  'ANSICON' in os.environ)
+    # isatty is not always implemented, #6223.
+    is_a_tty = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
+    return supported_platform and is_a_tty
