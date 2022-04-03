@@ -5,6 +5,7 @@
             "what": "menu",
             "name": "Title Screen",
             "text_render": "title.pzk",
+            "description": "",
             "commands": [
                 {
                     "what": "game-start"

@@ -1,6 +1,26 @@
 {
     "commands": [
         {
+            "what": "talk",
+            "kind": "talk",
+            "order": 500,
+            "on": [
+                "room"
+            ],
+            "description": "Talk",
+            "verbs": [
+                "talk",
+                "speak",
+                "shout",
+                "yell",
+                "whisper",
+                "message",
+                "say",
+                "hello",
+                "t"
+            ]
+        },
+        {
             "what": "game-start",
             "kind": "menu-game-start",
             "order": 1,

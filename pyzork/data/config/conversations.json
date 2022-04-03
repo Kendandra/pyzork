@@ -1,0 +1,14 @@
+{
+    "conversations": [
+        {
+            "id": 1,
+            "what": "conversation",
+            "kind": "conversation",
+            "name": "crow",
+            "yarn": "crow.yarn",
+            "commands": [
+                []
+            ]
+        }
+    ]
+}

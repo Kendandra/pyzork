@@ -1,17 +1,23 @@
-from pyzork.menu_scene import MenuScene
-from pyzork.room_scene import RoomScene
+from .conversation_scene import ConversationScene
+from .menu_scene import MenuScene
+from .player_actor import PlayerActor
+from .room_scene import RoomScene
 
-# Responsible for loading scenes, processing commands,
-# Owns all actors.
+
 class Director:
+    """
+    Responsible for loading scenes, processing commands,
+    Owns all actors.
+    """
     def __init__(self, settings, game_data):
         self.settings = settings
         self.menu_data = game_data["menus"]
         self.room_data = game_data["rooms"]
+        self.conversation_data = game_data["conversations"]
         self.command_data = game_data["commands"]
 
         self.current_scene = None
-        self.actor_player = None # TODO Make a player to track inventory state
+        self.actor_player = PlayerActor() # TODO Make a player to track inventory state
 
         # Start the game on the title-menu
         self.next_scene_request = ("menu", self.menu_data[0]["id"])
@@ -41,7 +47,7 @@ class Director:
                 break
 
         # TODO replace with a "goodbye" scene?
-        return "Thanks for playing!"
+        print("Thanks for playing!")
 
     # TODO Consider commands having their own handler?
     def execute_player_command(self, player_command_tuple):
@@ -54,22 +60,33 @@ class Director:
             # get the target to set the scene
             room_target = scene_command["target"]
             self.next_scene_request = ("room", room_target)
+            self.actor_player.room_location = room_target
+
+        elif command_kind == "talk":
+            conversation_target = scene_command["target"]
+            self.next_scene_request = ("conversation", conversation_target)
+
         elif command_kind == "menu-game-exit":
             # Special command that exits the while loop.
             return True
+
         elif command_kind == "menu-game-start":
             # Special command that always goes to room-1
             self.next_scene_request = ("room", 1)
+            self.actor_player.room_location = 1
+
         elif command_kind == "menu-game-settings-low":
             # Change graphics settings to low
             self.settings["graphics"] = "low"
             self.settings["display"]["use_truecolor"] = False
             self.settings["display"]["use_8color"] = True
+
         elif command_kind == "menu-game-settings-high":
             # Change graphics settings to low
             self.settings["graphics"] = "high"
             self.settings["display"]["use_truecolor"] = True
             self.settings["display"]["use_8color"] = False
+
         else:
             raise Exception("Unknown command kind", command_kind)
 
@@ -103,6 +120,17 @@ class Director:
                 raise Exception("No scene data found for id", next_scene_id)
 
             scene = MenuScene(
+                settings=self.settings,
+                scene_data=next_scene_data,
+                command_data=self.command_data)
+
+        elif next_scene_type == "conversation":
+            next_scene_data = next(iter([conversation for conversation in self.conversation_data if conversation["id"] == next_scene_id]), None)
+
+            if not next_scene_data:
+                raise Exception("No scene data found for id", next_scene_id)
+
+            scene = ConversationScene(
                 settings=self.settings,
                 scene_data=next_scene_data,
                 command_data=self.command_data)

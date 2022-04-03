@@ -1,15 +1,18 @@
-import os
 import importlib.resources as resources
 import climage
 from .helpers import clear_screen
-from pyzork import data as data_files
+from .data import templates
 
 
-# Responsible for managing and running a scene.  Right now only supports rooms.
-# Has to know about command data, because it is responsible for rendering the
-# command list.  Maybe move that to something else?
-# TODO Add more scene types by making subclasses and extracting the RoomScene bits
+
 class Scene:
+    """
+    Responsible for managing and running a scene.  Right now only supports rooms.
+    Has to know about command data, because it is responsible for rendering the
+    command list.  Maybe move that to something else?
+
+    TODO Add more scene types by making subclasses and extracting the RoomScene bits
+    """
     def __init__(self, settings, scene_data, command_data):
 
         if not scene_data:
@@ -27,7 +30,7 @@ class Scene:
             self.id = scene_data["id"]
             self.scene_commands = scene_data["commands"]
         except:
-            raise Exception("Scene configuration was missing required data.  Check data.json.")
+            raise Exception(f"Scene configuration was missing required data.  Check {self.what if self.what else '???'}s.json.")
 
         self.description = scene_data.get("description")
         self.image_render = scene_data.get("image_render")
@@ -43,11 +46,17 @@ class Scene:
 
 
     def set_scene(self, prompt="What will you do?"):
-        screen_description = self.description
-        screen_visual = self.get_screen_display()
-
+        """
+        Called by the Director to load the scene.
+        """
         # Get commands currently valid for scene (always) and current game/player state (changes)
         self.active_command_tuples = self.get_active_command_tuples()
+
+        screen_description = self.description
+        screen_description += "\n"*(self.display["scene_component_whitespace_size"]+1) if len(screen_description) > 0 else ""
+
+        screen_visual = self.get_screen_display()
+        screen_visual += "\n"*self.display["scene_component_whitespace_size"] if len(screen_visual) > 0 else ""
 
         command_list = self.get_command_prompt(self.active_command_tuples, prompt)
 
@@ -56,9 +65,14 @@ class Scene:
             print(f"Expected to render {self.what}:{self.id} {self.name}")
         else:
             clear_screen()
-            print(f"{screen_description}\n\n{screen_visual}\n{command_list}")
+            print(f"{screen_description}{screen_visual}{command_list}")
+
+
 
     def run_scene(self):
+        """
+        Called by the director to run the scene.
+        """
         if not self.active_command_tuples:
             raise Exception("No valid active commands found for scene.  Scene not set or misconfigured.", self.commands)
 
@@ -79,7 +93,7 @@ class Scene:
         # Remove whitespace and make lowercase, all our verbs are hopefully listed in the config as lowercase
         cleaned_input = input_raw.strip().lower()
 
-        # Search active command prototypes for their list of verbs (alises) find some that match
+        # Search active command prototypes for their list of verbs (aliases) find some that match
         possible_command_tuple_matches = [
             command_tuple
             for command_tuple
@@ -98,8 +112,8 @@ class Scene:
     # TODO When ghost-sense is added, should this move out of the scene display?
     def get_command_prompt(self, command_tuples, prompt):
         spacer = "■"
-        ruler = spacer*(self.display["max_width"])
-        centered_prompt = prompt.center(self.display["max_width"], " ")
+        ruler = spacer*(self.display["command_max_width"])
+        centered_prompt = prompt.center(self.display["command_max_width"], " ")
         command_descriptions = '\n'.join([prototype_command["description"] for (prototype_command, _) in command_tuples])
 
         return f"{ruler}\n{centered_prompt}\n{ruler}\n{command_descriptions}\n{ruler}"
@@ -113,10 +127,10 @@ class Scene:
                 is_256color=self.display["use_256color"],
                 is_8color=self.display["use_8color"],
                 palette="default",
-                width=self.display["max_width"]
+                width=self.display["room_max_width"]
                 )
         if self.text_render:
-            return resources.read_text(data_files, self.text_render)
+            return resources.read_text(templates, self.text_render)
         else:
             return ""
 

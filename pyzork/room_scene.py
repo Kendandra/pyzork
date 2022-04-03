@@ -1,4 +1,4 @@
-from pyzork.scene import Scene
+from .scene import Scene
 
 
 class RoomScene(Scene):

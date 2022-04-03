@@ -5,7 +5,7 @@
             "what": "room",
             "image_render": "k1",
             "name": "Entry Way",
-            "description": "The West here has closed up behind you.",
+            "description": "The west door here has closed up behind you.  A WINGLESS CORVIDAE minds its own business.",
             "commands": [
                 {
                     "what": "move-n",
@@ -18,6 +18,10 @@
                 {
                     "what": "move-s",
                     "target": 5
+                },
+                {
+                    "what": "talk",
+                    "target":  1
                 }
             ]
         },

@@ -1,0 +1,15 @@
+title: Arrival
+position: 0,0
+---
+Crow: [mood=normal/]Oh.
+Crow: So [color=red]another one[/color] arrives.
+Crow: What did you do to anger the [keyword]ancients[/keyword]?
+Crow: It's no matter, I guess. // Should the crow laugh here?
+<<jump Goodbye>>
+===
+title: Goodbye
+position: 0,100
+---
+Crow: [mood=happy/]Leaving already?
+Crow: [mood=normal/]I can hardly contain my excitement.
+===

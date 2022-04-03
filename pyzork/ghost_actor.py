@@ -1,5 +1,5 @@
 
-from pyzork.actor import Actor
+from .actor import Actor
 
 
 class GhostActor(Actor):
