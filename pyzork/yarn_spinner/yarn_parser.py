@@ -1,4 +1,5 @@
 import re
+from pyzork.yarn_spinner.yarn import Yarn
 
 from pyzork.yarn_spinner.yarn_node import YarnNode
 
@@ -34,7 +35,7 @@ re_group_node_header_value = 'node_header_value'
 re_group_node_header_key = 'node_header_key'
 re_node_header_delimiter = r'^---$'
 re_node_footer_delimiter = r'^===$'
-re_node_header_kvp = fr'^(?P<{re_group_node_header_key}>{re_token_identifier}):{re_whitespace_sans_newline}*(?P<{re_group_node_header_key}>{re_token_value}){re_whitespace_sans_newline}*$'
+re_node_header_kvp = fr'^(?P<{re_group_node_header_key}>{re_token_identifier}):{re_whitespace_sans_newline}*(?P<{re_group_node_header_value}>{re_token_value}){re_whitespace_sans_newline}*$'
 
 
 # Node body parsing
@@ -48,7 +49,7 @@ re_dialogue_line = fr"^(?P<{re_group_actor}>{re_token_identifier}):{re_whitespac
     Even though I tend to write with a lot of verbosity,
     I would hope that the .yarn files are never large enough I'd need to stream these in.
 """
-def parse_yarn(yarn_text):
+def parse_yarn(yarn_text, name="Unnamed Yarn", source_file=None) -> Yarn:
     """
     Converts a string of yarn text into a dictionary of yarn_nodes
     Accepts any style of EOL.
@@ -74,10 +75,10 @@ def parse_yarn(yarn_text):
     nodes = get_nodes(line_list)
 
     # TODO actually return a Yarn() class containing dict of nodes, entry point, & metadata
-    return nodes
+    return Yarn(nodes, name, source_file)
 
 def strip_comments(line):
-    re.sub(re_comment, '', line)
+    return re.sub(re_comment, '', line)
 
 def get_nodes(line_list):
 

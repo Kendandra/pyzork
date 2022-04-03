@@ -9,6 +9,7 @@ import json
 import sys
 
 debug = True
+yarn_debug = True
 
 # Entry point.  Responsible for loading all configs and creating the director.
 def main():
@@ -18,6 +19,7 @@ def main():
 
         settings = {
             "debug": debug, # When True, will omit game render and just do debug lines
+            "yarn_debug": yarn_debug,
             "graphics": "high" if supports_truecolor else "low",
             "resize_terminal": {
                 "should_resize": False, # TODO Currently doesn't work
@@ -58,8 +60,8 @@ def main():
             os.system(f'mode con: cols={settings["resize_terminal"]["cols"]} lines={settings["resize_terminal"]["lines"]}')
 
     except Exception as e:
-        print(f"LOAD ERROR: {e}")
-        return
+        print(f"LOAD ERROR.")
+        raise e
 
     if not debug:
         clear_screen()
@@ -117,6 +119,7 @@ def load_yarns(conversation_data):
     for conversation in conversation_data:
         try:
             conversation_id = conversation["id"]
+            conversation_name = conversation["name"]
             conversation_yarn = conversation["yarn"]
         except:
             raise Exception("Conversation was missing vital information.", conversation)
@@ -128,10 +131,13 @@ def load_yarns(conversation_data):
             raise Exception("Could not find yarn file for conversation.", conversation)
 
         try:
-            parsed_yarn = yarn_parser.parse_yarn(yarn_text)
+            parsed_yarn = yarn_parser.parse_yarn(yarn_text, conversation_name, conversation_yarn)
         except:
-            raise("Could not parse yarn for conversation.", conversation)
+            raise Exception("Could not parse yarn for conversation.", conversation)
 
         yarn_data[conversation_id] = parsed_yarn
+
+        if yarn_debug:
+            print(parsed_yarn)
 
     return yarn_data
