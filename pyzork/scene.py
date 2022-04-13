@@ -67,8 +67,6 @@ class Scene:
             clear_screen()
             print(f"{screen_description}{screen_visual}{command_list}")
 
-
-
     def run_scene(self):
         """
         Called by the director to run the scene.
@@ -201,6 +199,3 @@ class Scene:
                 raise Exception("Unknown command-when condition.", when_conditions)
 
         return False
-
-
-

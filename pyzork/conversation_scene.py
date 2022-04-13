@@ -2,11 +2,11 @@ from importlib import resources
 from .scene import Scene
 from .data import templates as templates
 import climage
-
+import typing
 
 class ConversationScene(Scene):
 
-    def __init__(self, settings, scene_data, command_data):
+    def __init__(self, settings: typing.Dict[str, object], scene_data, command_data):
         if scene_data["what"] != "conversation":
             raise Exception("Scene called on unsupported data type", scene_data["what"])
 

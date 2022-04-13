@@ -22,7 +22,11 @@ class YarnNode:
         return self.get_debug_str()
 
     def get_debug_str(self):
-        return '\n'.join([f"  {header.__str__()}" for header in self.header.items()]) + "\n---" + '\n'.join([f"  {thread.__str__()}" for thread in self.threads]) + "\n==="
+        return (
+            '\n'.join([f"  {header.__str__()}" for header in self.header.items()])
+            + "\n---\n" + '\n'.join([f"  {thread.__str__()}" for thread in self.threads])
+            + "\n===\n"
+        )
 
     @property
     def title(self):

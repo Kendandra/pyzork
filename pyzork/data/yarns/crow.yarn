@@ -12,4 +12,5 @@ position: 0,100
 ---
 Crow: [mood=happy/]Leaving already?
 Crow: [mood=normal/]I can hardly contain my excitement.
+Crow: [keyword][mood=happy]hello[/mood]Yup.[/keyword]
 ===

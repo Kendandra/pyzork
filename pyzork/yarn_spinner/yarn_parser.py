@@ -1,7 +1,9 @@
+from email.generator import Generator
 import re
 from pyzork.yarn_spinner.yarn import Yarn
 
 from pyzork.yarn_spinner.yarn_node import YarnNode
+from pyzork.yarn_spinner.yarn_thread import YarnCommand, YarnDialog, YarnToken, YarnTokenKind
 
 """
     Parseing token regexes
@@ -19,15 +21,25 @@ re_group_command_param = 'command_param'
 re_group_command_name = 'command_name'
 re_command_scope_open = r'<<'
 re_command_scope_close = r'>>'
-re_command_kvp = r'^{re_whitespace_sans_newline}*{re_command_scope_open}(?P<{re_group_command_name}>{re_token_identifier}) (?P<{re_group_command_param}>{re_token_identifier}){re_command_scope_close}{re_whitespace_sans_newline}*$'
+re_command_kvp = fr'^{re_whitespace_sans_newline}*{re_command_scope_open}(?P<{re_group_command_name}>{re_token_identifier}) (?P<{re_group_command_param}>{re_token_identifier}){re_command_scope_close}{re_whitespace_sans_newline}*$'
+"""
+    Pick up command only lines in threads
+
+    <<jump Goodbye>>
+"""
 
 
 # Markup parsing
 re_group_markup_tag_name = 'tag_name'
 re_group_markup_tag_param = 'tag_param'
 re_group_markup_tag_inclosed = 'tag_inclosed'
-# TODO support nested markup tags.  (I'm literally so close, but I can't regex anymore today)
-re_markup_tag = fr'\[(?P<{re_group_markup_tag_name}>(?:(?!]|=|]).)+)=?(?P<{re_group_markup_tag_param}>(?<==)(?:(?!]|=|/]).)+)?(?:(?:(?P<{re_group_markup_tag_inclosed}>(?:(?![|=|\\[]).)+)\[/\1\])|(?:/]))'
+re_markup_tag = fr'^\[(?P<{re_group_markup_tag_name}>(?:(?!\]|=|]).)+)=?(?P<{re_group_markup_tag_param}>(?<==)(?:(?!]|=|]).)+)?\](?:(?:(?P<{re_group_markup_tag_inclosed}>[^\]].*)?)\[\/\1\])?$'
+"""
+    Pick out lines of markup to tokenize like:
+    "\[(?P<re_group_markup_tag_name>(?:(?!\]|=|]).)+)=?(?P<re_group_markup_tag_param>(?<==)(?:(?!]|=|]).)+)?\](?:(?:(?P<re_group_markup_tag_inclosed>[^\]].*)?)\[\/\1\])?"mg
+
+    [keyword]ancients[/keyword]
+"""
 
 
 # Node metastructure parsing
@@ -36,12 +48,25 @@ re_group_node_header_key = 'node_header_key'
 re_node_header_delimiter = r'^---$'
 re_node_footer_delimiter = r'^===$'
 re_node_header_kvp = fr'^(?P<{re_group_node_header_key}>{re_token_identifier}):{re_whitespace_sans_newline}*(?P<{re_group_node_header_value}>{re_token_value}){re_whitespace_sans_newline}*$'
+"""
+    Get header row like:
+
+    title: Arrival
+"""
 
 
 # Node body parsing
 re_group_actor = 'actor_name'
 re_group_dialog_value = 'dialog'
 re_dialogue_line = fr"^(?P<{re_group_actor}>{re_token_identifier}):{re_whitespace_sans_newline}*(?P<{re_group_dialog_value}>{re_token_dialog})$"
+"""
+    Get a line of dialog like:
+
+    Crow: [mood=normal/]Oh.
+"""
+
+
+
 
 """
     Actual parsing.
@@ -49,7 +74,7 @@ re_dialogue_line = fr"^(?P<{re_group_actor}>{re_token_identifier}):{re_whitespac
     Even though I tend to write with a lot of verbosity,
     I would hope that the .yarn files are never large enough I'd need to stream these in.
 """
-def parse_yarn(yarn_text, name="Unnamed Yarn", source_file=None) -> Yarn:
+def parse_yarn(yarn_text: str, name="Unnamed Yarn", source_file=None) -> Yarn:
     """
     Converts a string of yarn text into a dictionary of yarn_nodes
     Accepts any style of EOL.
@@ -74,13 +99,12 @@ def parse_yarn(yarn_text, name="Unnamed Yarn", source_file=None) -> Yarn:
 
     nodes = get_nodes(line_list)
 
-    # TODO actually return a Yarn() class containing dict of nodes, entry point, & metadata
     return Yarn(nodes, name, source_file)
 
-def strip_comments(line):
+def strip_comments(line: str):
     return re.sub(re_comment, '', line)
 
-def get_nodes(line_list):
+def get_nodes(line_list: list):
 
     header_dict = {}
     thread_list = []
@@ -119,5 +143,60 @@ def get_nodes(line_list):
                     node_header_kvp_match.group(re_group_node_header_key),
                     node_header_kvp_match.group(re_group_node_header_value)
                 )
-        else :
-            pass    #Uh, let's just not worry about getting the node body for now.
+        else:
+            thread_command_match = re.match(re_command_kvp, line)
+
+            thread = None
+
+            if thread_command_match:
+                thread = YarnCommand(thread_command_match.group(re_group_command_name), thread_command_match.group(re_group_command_param), line)
+            else:
+                thread_dialog_match = re.match(re_dialogue_line, line)
+
+                if thread_dialog_match:
+                    thread_actor = thread_dialog_match.group(re_group_actor)
+                    thread_dialog = thread_dialog_match.group(re_group_dialog_value)
+
+                    thread_tokens = list(tokenize_dialog_line(thread_dialog))
+
+                    thread = YarnDialog(thread_actor, thread_dialog, thread_tokens, line)
+
+            if thread:
+                thread_list.append(thread)
+
+
+def tokenize_dialog_line(thread_dialog: str):
+    thread_dialog_stripped = thread_dialog.strip()
+
+    if not thread_dialog_stripped:
+        return
+
+    try:
+        str_before_markup = thread_dialog_stripped[:thread_dialog_stripped.index("[")]
+    except ValueError:
+        yield YarnToken(YarnTokenKind.TEXT, thread_dialog_stripped)
+        return
+
+    if str_before_markup:
+        yield YarnToken(YarnTokenKind.TEXT, str_before_markup)
+        str_remainder = thread_dialog_stripped[len(str_before_markup):]
+
+        if not str_remainder:
+            return
+
+    else:
+        str_remainder = str_before_markup
+
+    markup_match = re.match(re_markup_tag, str_remainder)
+
+    if markup_match:
+        tag_name = markup_match.group(re_group_markup_tag_name)
+        tag_param = markup_match.group(re_group_markup_tag_param)
+        tag_inclosed = markup_match.group(re_group_markup_tag_inclosed)
+
+        yield YarnToken(YarnTokenKind[tag_name.upper], tag_param)
+        if tag_inclosed:
+            yield from tokenize_dialog_line(tag_inclosed)
+
+    else:
+        yield YarnToken(YarnTokenKind.TEXT, thread_dialog_stripped)
