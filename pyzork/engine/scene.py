@@ -1,7 +1,9 @@
 import importlib.resources as resources
 import climage
-from .helpers import clear_screen
-from .data import templates
+
+from pyzork.engine.errors import InvalidSceneDataError
+from ..helpers import clear_screen
+from ..data import templates
 
 
 
@@ -29,8 +31,8 @@ class Scene:
             self.name = scene_data["name"]
             self.id = scene_data["id"]
             self.scene_commands = scene_data["commands"]
-        except:
-            raise Exception(f"Scene configuration was missing required data.  Check {self.what if self.what else '???'}s.json.")
+        except ValueError as value_error:
+            raise InvalidSceneDataError(f"Scene configuration was missing required data.  Check {self.what if self.what else '???'}s.json.") from value_error
 
         self.description = scene_data.get("description")
         self.image_render = scene_data.get("image_render")
@@ -50,7 +52,10 @@ class Scene:
         Called by the Director to load the scene.
         """
         # Get commands currently valid for scene (always) and current game/player state (changes)
-        self.active_command_tuples = self.get_active_command_tuples()
+        try:
+            self.active_command_tuples = self.get_active_command_tuples()
+        except:
+            pass
 
         screen_description = self.description
         screen_description += "\n"*(self.display["scene_component_whitespace_size"]+1) if len(screen_description) > 0 else ""

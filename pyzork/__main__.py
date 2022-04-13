@@ -1,7 +1,7 @@
 import os
 from .data import config
 from .data import yarns
-from .director import Director
+from .engine.director import Director
 from .yarn_spinner import yarn_parser
 from .helpers import clear_screen;
 import importlib.resources as resources

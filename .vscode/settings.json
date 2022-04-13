@@ -7,5 +7,10 @@
     ],
     "cSpell.enableFiletypes": [
         "yarnspinner"
-    ]
+    ],
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append('./pyzork')"
+    ],
+    "python.linting.pylintPath": ".venv/bin/pylint"
 }

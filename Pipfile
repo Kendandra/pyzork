@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 climage = "*"
+pylint = "*"
 
 [dev-packages]
 
