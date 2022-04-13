@@ -1,4 +1,3 @@
-from email.generator import Generator
 import re
 from pyzork.yarn_spinner.yarn import Yarn
 
@@ -39,7 +38,7 @@ re_markup_tag = fr'^\[(?P<{re_group_markup_tag_name}>(?:(?!(?://\])|=|]).)+)=?(?
     Pick out lines of markup to tokenize like:
     "\[(?P<re_group_markup_tag_name>(?:(?!\]|=|]).)+)=?(?P<re_group_markup_tag_param>(?<==)(?:(?!]|=|]).)+)?\](?:(?:(?P<re_group_markup_tag_inclosed>[^\]].*)?)\[\/\1\])?"mg
 
-    [keyword]ancients[/keyword]
+    [keyword=req]ancients[/keyword]
 """
 
 

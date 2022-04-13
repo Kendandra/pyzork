@@ -8,8 +8,8 @@ import importlib.resources as resources
 import json
 import sys
 
-debug = True
-yarn_debug = True
+debug = False
+yarn_debug = False
 
 # Entry point.  Responsible for loading all configs and creating the director.
 def main():
