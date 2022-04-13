@@ -3,7 +3,7 @@ import re
 from pyzork.yarn_spinner.yarn import Yarn
 
 from pyzork.yarn_spinner.yarn_node import YarnNode
-from pyzork.yarn_spinner.yarn_thread import YarnCommand, YarnDialog, YarnToken, YarnTokenKind
+from pyzork.yarn_spinner.yarn_thread import YarnCommand, YarnDialog, YarnToken, YarnTokenKind, YarnTokenScope
 
 """
     Parseing token regexes
@@ -33,7 +33,8 @@ re_command_kvp = fr'^{re_whitespace_sans_newline}*{re_command_scope_open}(?P<{re
 re_group_markup_tag_name = 'tag_name'
 re_group_markup_tag_param = 'tag_param'
 re_group_markup_tag_inclosed = 'tag_inclosed'
-re_markup_tag = fr'^\[(?P<{re_group_markup_tag_name}>(?:(?!\]|=|]).)+)=?(?P<{re_group_markup_tag_param}>(?<==)(?:(?!]|=|]).)+)?\](?:(?:(?P<{re_group_markup_tag_inclosed}>[^\]].*)?)\[\/\1\])?$'
+re_group_markup_remainder = 'tag_remainder'
+re_markup_tag = fr'^\[(?P<{re_group_markup_tag_name}>(?:(?!(?://\])|=|]).)+)=?(?P<{re_group_markup_tag_param}>(?<==)(?:(?!]|=|(?:\])).)+)?\](?:(?:(?P<{re_group_markup_tag_inclosed}>[^\]].*)?)\[\/\1\])?(?P<{re_group_markup_remainder}>(.*))?$'
 """
     Pick out lines of markup to tokenize like:
     "\[(?P<re_group_markup_tag_name>(?:(?!\]|=|]).)+)=?(?P<re_group_markup_tag_param>(?<==)(?:(?!]|=|]).)+)?\](?:(?:(?P<re_group_markup_tag_inclosed>[^\]].*)?)\[\/\1\])?"mg
@@ -85,7 +86,7 @@ def parse_yarn(yarn_text: str, name="Unnamed Yarn", source_file=None) -> Yarn:
     * TODO handle Yarn's "hashtag meta keys"  E.G. how they did localization: "#line:0faf7c"
     * TODO add at least basic support for Yarn's if/else system.
     * TODO add at least basic support for Yarn's visited node system.
-    * TODO add support for nested markup tags
+    * TODO add support for two same (non-nested) tags on the same line.
     """
 
     # First normalize the line endings, then get an array of lines.
@@ -174,18 +175,18 @@ def tokenize_dialog_line(thread_dialog: str):
     try:
         str_before_markup = thread_dialog_stripped[:thread_dialog_stripped.index("[")]
     except ValueError:
-        yield YarnToken(YarnTokenKind.TEXT, thread_dialog_stripped)
+        yield YarnToken(YarnTokenKind.TEXT, thread_dialog_stripped, YarnTokenScope.INSTANT)
         return
 
     if str_before_markup:
-        yield YarnToken(YarnTokenKind.TEXT, str_before_markup)
+        yield YarnToken(YarnTokenKind.TEXT, str_before_markup, YarnTokenScope.INSTANT)
         str_remainder = thread_dialog_stripped[len(str_before_markup):]
 
         if not str_remainder:
             return
 
     else:
-        str_remainder = str_before_markup
+        str_remainder = thread_dialog_stripped
 
     markup_match = re.match(re_markup_tag, str_remainder)
 
@@ -193,10 +194,25 @@ def tokenize_dialog_line(thread_dialog: str):
         tag_name = markup_match.group(re_group_markup_tag_name)
         tag_param = markup_match.group(re_group_markup_tag_param)
         tag_inclosed = markup_match.group(re_group_markup_tag_inclosed)
+        tag_remainder = markup_match.group(re_group_markup_remainder)
 
-        yield YarnToken(YarnTokenKind[tag_name.upper], tag_param)
-        if tag_inclosed:
-            yield from tokenize_dialog_line(tag_inclosed)
+        try:
+            kind = YarnTokenKind[tag_name.strip('/').upper()]
+        except KeyError:
+            kind = YarnTokenKind.UNKNOWN
+
+        if '/' in tag_name or (tag_param and '/' in tag_param):
+            yield YarnToken(kind, tag_param.strip('/') if tag_param else None, YarnTokenScope.INSTANT)
+        else:
+            yield YarnToken(kind, tag_param.strip('/') if tag_param else None, YarnTokenScope.OPEN)
+
+            if tag_inclosed:
+                yield from tokenize_dialog_line(tag_inclosed)
+
+            yield YarnToken(kind, tag_param.strip('/') if tag_param else None, YarnTokenScope.CLOSE)
+
+        if tag_remainder:
+            yield from tokenize_dialog_line(tag_remainder)
 
     else:
-        yield YarnToken(YarnTokenKind.TEXT, thread_dialog_stripped)
+        yield YarnToken(YarnTokenKind.TEXT, thread_dialog_stripped, YarnTokenScope.INSTANT)

@@ -13,7 +13,7 @@ class YarnThread:
 
 
 class YarnDialog(YarnThread):
-    def __init__(self, speaker, text_with_attributes, tokens, raw_text=None) -> None:
+    def __init__(self, speaker, text_with_attributes, tokens, raw_text: str=None) -> None:
         self.raw_parse_text = raw_text
 
         self.speaker = speaker
@@ -38,18 +38,6 @@ class YarnCommand(YarnThread):
         return f"<<{self.command_name} {self.command_param}>>"
 
 
-
-class YarnToken:
-    """
-    A token inside a yarn dialog
-    """
-    def __init__(self, kind, value) -> None:
-        self.kind = kind
-        self.parameter = value
-
-    def __str__(self) -> str:
-        return f"[{self.kind.name}={self.parameter}]"
-
 class YarnTokenKind(Enum):
     """
     Yarn token enums, contains the full list of markup attributes
@@ -62,3 +50,23 @@ class YarnTokenKind(Enum):
     WAIT = 5
     SPEED = 6
     COLOR = 7
+
+class YarnTokenScope(Enum):
+    """
+    Yarn token scope enums, for the lifetime of a markup event
+    """
+    INSTANT = 0
+    OPEN = 1
+    CLOSE = 2
+
+class YarnToken:
+    """
+    A token inside a yarn dialog
+    """
+    def __init__(self, kind: YarnTokenKind, value: str, scope: YarnTokenScope) -> None:
+        self.kind = kind
+        self.parameter = value
+        self.scope = scope
+
+    def __str__(self) -> str:
+        return f"[{self.kind.name}={self.parameter} {self.scope.name if self.scope != YarnTokenScope.INSTANT else '/'}]"
